@@ -7,7 +7,7 @@ android {
         applicationId "com.github.singleunderscore.sharetoopenlink"
         minSdkVersion 9
         targetSdkVersion 25
-        versionCode 1
+        versionCode 2
         versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
