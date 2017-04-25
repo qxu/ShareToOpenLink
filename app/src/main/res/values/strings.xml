@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Share To Open Link</string>
+    <string name="null_text_msg">Null text</string>
+    <string name="empty_text_msg">Empty text</string>
+    <string name="no_activity_msg">No app found to handle text</string>
 </resources>
