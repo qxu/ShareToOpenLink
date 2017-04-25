@@ -1,4 +1,4 @@
-package com.github.qxu.sharetoopenlink;
+package com.github.singleunderscore.sharetoopenlink;
 
 import org.junit.Test;
 

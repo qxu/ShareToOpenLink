@@ -1,4 +1,4 @@
-package com.github.qxu.sharetoopenlink;
+package com.github.singleunderscore.sharetoopenlink;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.github.qxu.sharetoopenlink", appContext.getPackageName());
+        assertEquals("com.github.singleunderscore.sharetoopenlink", appContext.getPackageName());
     }
 }

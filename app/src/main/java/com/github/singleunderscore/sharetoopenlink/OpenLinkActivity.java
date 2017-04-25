@@ -1,15 +1,12 @@
-package com.github.qxu.sharetoopenlink;
+package com.github.singleunderscore.sharetoopenlink;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-public class ShareActivity extends AppCompatActivity {
+public class OpenLinkActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
