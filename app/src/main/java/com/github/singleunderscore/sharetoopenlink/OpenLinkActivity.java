@@ -1,15 +1,13 @@
 package com.github.singleunderscore.sharetoopenlink;
 
-import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.webkit.URLUtil;
 import android.widget.Toast;
-
-import java.util.Arrays;
 
 public class OpenLinkActivity extends AppCompatActivity {
 
@@ -21,46 +19,60 @@ public class OpenLinkActivity extends AppCompatActivity {
 
         // make sure this is a share intent
         if (!Intent.ACTION_SEND.equals(intent.getAction())) {
-            finish();
-            return;
-        }
-
-        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-        if (sharedText == null) {
-            // don't modify clipboard if null sharedText
-            String nullTextMsg = getResources().getString(R.string.null_text_msg);
-            Toast.makeText(getApplicationContext(), nullTextMsg, Toast.LENGTH_SHORT).show();
+            showTextToast(R.string.share_err_msg);
         } else {
-            String[] words = sharedText.split("\\s+");
-            if (words.length == 0) {
-                String emptyTextMsg = getResources().getString(R.string.empty_text_msg);
-                Toast.makeText(getApplicationContext(), emptyTextMsg, Toast.LENGTH_SHORT).show();
+            String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+            if (sharedText == null) {
+                // don't modify clipboard if null sharedText
+                showTextToast(R.string.null_text_msg);
             } else {
-                boolean validLinkFound = false;
-                for (String word : words) {
-                    if (URLUtil.isValidUrl(word)) {
-                        Uri sharedUri = Uri.parse(word);
-
-                        Intent openIntent = new Intent(Intent.ACTION_VIEW, sharedUri);
-
-                        try {
-                            startActivity(openIntent);
-                            validLinkFound = true;
-                            break;
-                        } catch (ActivityNotFoundException e) {
-                            // continue and try next word
+                String[] words = sharedText.split("\\s+");
+                if (words.length == 0) {
+                    showTextToast(R.string.empty_text_msg);
+                } else {
+                    boolean validLinkFound = false;
+                    for (String word : words) {
+                        if (URLUtil.isValidUrl(word)) {
+                            Uri targetUri = Uri.parse(word);
+                            if (handleTargetUri(targetUri)) {
+                                validLinkFound = true;
+                                break;
+                            }
                         }
                     }
-                }
-                if (!validLinkFound) {
-                    String noActivityMsg = getResources().getString(R.string.no_activity_msg);
-                    String fullMsg = noActivityMsg + "\n" + sharedText;
-                    Toast.makeText(getApplicationContext(), fullMsg, Toast.LENGTH_LONG).show();
+                    if (!validLinkFound) {
+                        String noActivityMsg = getString(R.string.no_activity_msg);
+                        String fullMsg = noActivityMsg + "\n" + sharedText;
+                        showTextToast(fullMsg);
+                    }
                 }
             }
         }
 
-
         finish();
+    }
+
+    private void showTextToast(int stringResId) {
+        showTextToast(getString(stringResId));
+    }
+
+    private void showTextToast(String text) {
+        Context context = getApplicationContext();
+        Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+    }
+
+    private boolean handleTargetUri(Uri targetUri) {
+        Intent targetIntent = new Intent(Intent.ACTION_VIEW, targetUri);
+
+        PackageManager packageManager = getPackageManager();
+
+        Intent chooserIntent = Intent.createChooser(targetIntent, targetUri.toString());
+        if (chooserIntent.resolveActivity(packageManager) != null) {
+            showTextToast(targetUri.toString());
+            startActivity(chooserIntent);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
